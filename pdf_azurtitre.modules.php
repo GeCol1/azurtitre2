@@ -8,6 +8,7 @@
  * Copyright (C) 2015      Marcos García        <marcosgdf@gmail.com>
  * Copyright (C) 2017-2018 Ferran Marcet        <fmarcet@2byte.es>
  * Copyright (C) 2018      Frédéric France      <frederic.france@netlogic.fr>
+ * Copyright (C) 2025      Gérald Colin         <gcolin@solsys.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -140,9 +141,9 @@ class pdf_azurtitre extends ModelePDFPropales
 
 		// Dimension page
 		$this->type = 'pdf';
-		$formatarray=pdf_getFormat();
-		$this->page_largeur = $formatarray['width'];
-		$this->page_hauteur = $formatarray['height'];
+		$formatArray=pdf_getFormat();
+		$this->page_largeur = $formatArray['width'];
+		$this->page_hauteur = $formatArray['height'];
 		$this->format = array($this->page_largeur,$this->page_hauteur);
 		$this->marge_gauche=isset($conf->global->MAIN_PDF_MARGIN_LEFT)?$conf->global->MAIN_PDF_MARGIN_LEFT:10;
 		$this->marge_droite=isset($conf->global->MAIN_PDF_MARGIN_RIGHT)?$conf->global->MAIN_PDF_MARGIN_RIGHT:10;
@@ -401,7 +402,7 @@ class pdf_azurtitre extends ModelePDFPropales
 
 
 	            $tab_top = 90+$top_shift;
-				$tab_top_newpage = (empty($conf->global->MAIN_PDF_DONOTREPEAT_HEAD)?42+$top_shift:10);
+				$tab_top_newPage = (empty($conf->global->MAIN_PDF_DONOTREPEAT_HEAD)?42+$top_shift:10);
 
 				// Incoterm
 				if ($conf->incoterm->enabled)
@@ -425,37 +426,37 @@ class pdf_azurtitre extends ModelePDFPropales
 				}
 
 				// Affiche notes
-				$notetoshow=empty($object->note_public)?'':$object->note_public;
+				$noteToShow=empty($object->note_public)?'':$object->note_public;
 				if (! empty($conf->global->MAIN_ADD_SALE_REP_SIGNATURE_IN_NOTE))
 				{
 					// Get first sale rep
 					if (is_object($object->thirdparty))
 					{
-						$salereparray=$object->thirdparty->getSalesRepresentatives($user);
-						$salerepobj=new User($this->db);
-						$salerepobj->fetch($salereparray[0]['id']);
-						if (! empty($salerepobj->signature)) $notetoshow=dol_concatdesc($notetoshow, $salerepobj->signature);
+						$saleRepArray=$object->thirdparty->getSalesRepresentatives($user);
+						$saleRepObj=new User($this->db);
+						$saleRepObj->fetch($saleRepArray[0]['id']);
+						if (! empty($saleRepObj->signature)) $noteToShow=dol_concatdesc($noteToShow, $saleRepObj->signature);
 					}
 				}
 				if (! empty($conf->global->MAIN_ADD_CREATOR_IN_NOTE) && $object->user_author_id > 0)
 				{
-				    $tmpuser=new User($this->db);
-				    $tmpuser->fetch($object->user_author_id);
-				    $notetoshow.='Affaire suivi par '.$tmpuser->getFullName($langs);
-				    if ($tmpuser->email) $notetoshow.=',  Mail: '.$tmpuser->email;
-				    if ($tmpuser->office_phone) $notetoshow.=', Tel: '.$tmpuser->office_phone;
+				    $tmpUser=new User($this->db);
+				    $tmpUser->fetch($object->user_author_id);
+				    $noteToShow.='Affaire suivi par '.$tmpUser->getFullName($langs);
+				    if ($tmpUser->email) $noteToShow.=',  Mail: '.$tmpUser->email;
+				    if ($tmpUser->office_phone) $noteToShow.=', Tel: '.$tmpUser->office_phone;
 				}
-				if ($notetoshow)
+				if ($noteToShow)
 				{
 					$tab_top -= 2;
 
 					$substitutionarray=pdf_getSubstitutionArray($outputlangs, null, $object);
 					complete_substitutions_array($substitutionarray, $outputlangs, $object);
-					$notetoshow = make_substitutions($notetoshow, $substitutionarray, $outputlangs);
-					$notetoshow = convertBackOfficeMediasLinksToPublicLinks($notetoshow);
+					$noteToShow = make_substitutions($noteToShow, $substitutionarray, $outputlangs);
+					$noteToShow = convertBackOfficeMediasLinksToPublicLinks($noteToShow);
 
 					$pdf->SetFont('', '', $default_font_size - 1);
-					$pdf->writeHTMLCell(190, 3, $this->posxdesc-1, $tab_top-1, dol_htmlentitiesbr($notetoshow), 0, 1);
+					$pdf->writeHTMLCell(190, 3, $this->posxdesc-1, $tab_top-1, dol_htmlentitiesbr($noteToShow), 0, 1);
 					$nexY = $pdf->GetY();
 					$height_note=$nexY-$tab_top;
 
@@ -485,11 +486,11 @@ class pdf_azurtitre extends ModelePDFPropales
 					$imglinesize=array();
 					if (! empty($realpatharray[$i])) $imglinesize=pdf_getSizeForImage($realpatharray[$i]);
 
-					$pdf->setTopMargin($tab_top_newpage);
+					$pdf->setTopMargin($tab_top_newPage);
 					$pdf->setPageOrientation('', 1, $heightforfooter+$heightforfreetext+$heightforsignature+$heightforinfotot);	// The only function to edit the bottom margin of current page to set it.
 					$pageposbefore=$pdf->getPage();
 
-					$showpricebeforepagebreak=1;
+					$showPriceBeforePageBreak=1;
 					$posYAfterImage=0;
 					$posYAfterDescription=0;
 
@@ -501,8 +502,8 @@ class pdf_azurtitre extends ModelePDFPropales
 						if (empty($conf->global->MAIN_PDF_DONOTREPEAT_HEAD)) $this->_pagehead($pdf, $object, 0, $outputlangs);
 						$pdf->setPage($pageposbefore+1);
 
-						$curY = $tab_top_newpage;
-						$showpricebeforepagebreak=0;
+						$curY = $tab_top_newPage;
+						$showPriceBeforePageBreak=0;
 					}
 
 					if (isset($imglinesize['width']) && isset($imglinesize['height']))
@@ -518,16 +519,16 @@ class pdf_azurtitre extends ModelePDFPropales
 
 					$pdf->startTransaction();
 					pdf_writelinedesc($pdf, $object, $i, $outputlangs, $this->posxpicture-$curX, 3, $curX, $curY, $hideref, $hidedesc);
-					$pageposafter=$pdf->getPage();
-					if ($pageposafter > $pageposbefore)	// There is a pagebreak
+					$pagePosAfter=$pdf->getPage();
+					if ($pagePosAfter > $pageposbefore)	// There is a pagebreak
 					{
 						$pdf->rollbackTransaction(true);
-						$pageposafter=$pageposbefore;
+						$pagePosAfter=$pageposbefore;
 						//print $pageposafter.'-'.$pageposbefore;exit;
 						$pdf->setPageOrientation('', 1, $heightforfooter);	// The only function to edit the bottom margin of current page to set it.
 						pdf_writelinedesc($pdf, $object, $i, $outputlangs, $this->posxpicture-$curX, 3, $curX, $curY, $hideref, $hidedesc);
 
-						$pageposafter=$pdf->getPage();
+						$pagePosAfter=$pdf->getPage();
 						$posyafter=$pdf->GetY();
 						//var_dump($posyafter); var_dump(($this->page_hauteur - ($heightforfooter+$heightforfreetext+$heightforinfotot))); exit;
 						if ($posyafter > ($this->page_hauteur - ($heightforfooter+$heightforfreetext+$heightforsignature+$heightforinfotot)))	// There is no space left for total+free text
@@ -537,13 +538,13 @@ class pdf_azurtitre extends ModelePDFPropales
 								$pdf->AddPage('', '', true);
 								if (! empty($tplidx)) $pdf->useTemplate($tplidx);
 								if (empty($conf->global->MAIN_PDF_DONOTREPEAT_HEAD)) $this->_pagehead($pdf, $object, 0, $outputlangs);
-								$pdf->setPage($pageposafter+1);
+								$pdf->setPage($pagePosAfter+1);
 							}
 						}
 						else
 						{
 							// We found a page break
-							$showpricebeforepagebreak=0;
+							$showPriceBeforePageBreak=0;
 						}
 					}
 					else	// No pagebreak
@@ -553,15 +554,15 @@ class pdf_azurtitre extends ModelePDFPropales
 					$posYAfterDescription=$pdf->GetY();
 
 					$nexY = $pdf->GetY();
-					$pageposafter=$pdf->getPage();
+					$pagePosAfter=$pdf->getPage();
 
 					$pdf->setPage($pageposbefore);
 					$pdf->setTopMargin($this->marge_haute);
 					$pdf->setPageOrientation('', 1, 0);	// The only function to edit the bottom margin of current page to set it.
 
 					// We suppose that a too long description or photo were moved completely on next page
-					if ($pageposafter > $pageposbefore && empty($showpricebeforepagebreak)) {
-						$pdf->setPage($pageposafter); $curY = $tab_top_newpage;
+					if ($pagePosAfter > $pageposbefore && empty($showPriceBeforePageBreak)) {
+						$pdf->setPage($pagePosAfter); $curY = $tab_top_newPage;
 					}
 
 					$pdf->SetFont('', '', $default_font_size - 1);   // On repositionne la police par defaut
@@ -632,8 +633,9 @@ class pdf_azurtitre extends ModelePDFPropales
 					}
 
 					//Tableau sous total pour titres
-					if(empty($isTitre)){
-						$ssTotalTitre[$numTitre] += $object->lines[$i]->total_ht;
+                    $ssTotalTitre = [];
+                    if(empty($isTitre)){
+                        $ssTotalTitre[$numTitre] += $object->lines[$i]->total_ht;
 					}
 
 					// Collecte des totaux par valeur de tva dans $this->tva["taux"]=total_tva
@@ -678,7 +680,7 @@ class pdf_azurtitre extends ModelePDFPropales
 					// Add line
 					if (! empty($conf->global->MAIN_PDF_DASH_BETWEEN_LINES) && $i < ($nblignes - 1) && !empty($isTitre) && $i>0)
 					{
-						$pdf->setPage($pageposafter);
+						$pdf->setPage($pagePosAfter);
 						$pdf->SetLineStyle(array('dash'=>'1,1','color'=>array(80,80,80)));
 						//$pdf->SetDrawColor(190,190,200);
 						$pdf->line($this->marge_gauche, $curY, $this->page_largeur - $this->marge_droite, $curY);
@@ -688,7 +690,7 @@ class pdf_azurtitre extends ModelePDFPropales
 					$nexY+=2;    // Passe espace entre les lignes
 
 					// Detect if some page were added automatically and output _tableau for past pages
-					while ($pagenb < $pageposafter)
+					while ($pagenb < $pagePosAfter)
 					{
 						$pdf->setPage($pagenb);
 						if ($pagenb == 1)
@@ -697,7 +699,7 @@ class pdf_azurtitre extends ModelePDFPropales
 						}
 						else
 						{
-							$this->_tableau($pdf, $tab_top_newpage, $this->page_hauteur - $tab_top_newpage - $heightforfooter, 0, $outputlangs, 1, 1, $object->multicurrency_code);
+							$this->_tableau($pdf, $tab_top_newPage, $this->page_hauteur - $tab_top_newPage - $heightforfooter, 0, $outputlangs, 1, 1, $object->multicurrency_code);
 						}
 						$this->_pagefoot($pdf, $object, $outputlangs, 1);
 						$pagenb++;
@@ -713,7 +715,7 @@ class pdf_azurtitre extends ModelePDFPropales
 						}
 						else
 						{
-							$this->_tableau($pdf, $tab_top_newpage, $this->page_hauteur - $tab_top_newpage - $heightforfooter, 0, $outputlangs, 1, 1, $object->multicurrency_code);
+							$this->_tableau($pdf, $tab_top_newPage, $this->page_hauteur - $tab_top_newPage - $heightforfooter, 0, $outputlangs, 1, 1, $object->multicurrency_code);
 						}
 						$this->_pagefoot($pdf, $object, $outputlangs, 1);
 						// New page
@@ -758,7 +760,7 @@ class pdf_azurtitre extends ModelePDFPropales
 				}
 				else
 				{
-					$this->_tableau($pdf, $tab_top_newpage, $this->page_hauteur - $tab_top_newpage - $heightforinfotot - $heightforfreetext - $heightforsignature - $heightforfooter, 0, $outputlangs, 1, 0, $object->multicurrency_code);
+					$this->_tableau($pdf, $tab_top_newPage, $this->page_hauteur - $tab_top_newPage - $heightforinfotot - $heightforfreetext - $heightforsignature - $heightforfooter, 0, $outputlangs, 1, 0, $object->multicurrency_code);
 					$bottomlasttab=$this->page_hauteur - $heightforinfotot - $heightforfreetext - $heightforsignature - $heightforfooter + 1;
 				}
 
