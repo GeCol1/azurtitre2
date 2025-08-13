@@ -1,19 +1,14 @@
 <?php
-/* Copyright (C) 2004-2014  Laurent Destailleur			<eldy@users.sourceforge.net>
- * Copyright (C) 2005-2012  Regis Houssin				<regis.houssin@inodbox.com>
- * Copyright (C) 2008       Raphael Bertrand			<raphael.bertrand@resultic.fr>
- * Copyright (C) 2010-2015  Juanjo Menent				<jmenent@2byte.es>
- * Copyright (C) 2012       Christophe Battarel			<christophe.battarel@altairis.fr>
- * Copyright (C) 2012       Cedric Salvador				<csalvador@gpcsolutions.fr>
- * Copyright (C) 2015       Marcos García				<marcosgdf@gmail.com>
- * Copyright (C) 2017-2018  Ferran Marcet				<fmarcet@2byte.es>
- * Copyright (C) 2018-2025  Frédéric France				<frederic.france@free.fr>
- * Copyright (C) 2019       Pierre Ardoin				<mapiolca@me.com>
- * Copyright (C) 2021-2024	Anthony Berton				<anthony.berton@bb2a.fr>
- * Copyright (C) 2024-2025	MDW							<mdeweerd@users.noreply.github.com>
- * Copyright (C) 2024	    Nick Fragoulis
- * Copyright (C) 2024		Alexandre Spangaro			<alexandre@inovea-conseil.com>
-  * Copyright (C) 2025      Gérald Colin         		<gcolin@solsys.fr>
+/* Copyright (C) 2004-2014 Laurent Destailleur  <eldy@users.sourceforge.net>
+ * Copyright (C) 2005-2012 Regis Houssin        <regis.houssin@inodbox.com>
+ * Copyright (C) 2008      Raphael Bertrand     <raphael.bertrand@resultic.fr>
+ * Copyright (C) 2010-2015 Juanjo Menent        <jmenent@2byte.es>
+ * Copyright (C) 2012      Christophe Battarel  <christophe.battarel@altairis.fr>
+ * Copyright (C) 2012      Cedric Salvador      <csalvador@gpcsolutions.fr>
+ * Copyright (C) 2015      Marcos García        <marcosgdf@gmail.com>
+ * Copyright (C) 2017-2018 Ferran Marcet        <fmarcet@2byte.es>
+ * Copyright (C) 2018      Frédéric France      <frederic.france@netlogic.fr>
+ * Copyright (C) 2025      Gérald Colin         <gcolin@solsys.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,8 +21,8 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <https://www.gnu.org/licenses/>.
- * or see https://www.gnu.org/
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * or see http://www.gnu.org/
  */
 
 /**
@@ -59,14 +54,14 @@ class pdf_azurtitre extends ModelePDFPropales
 	public $entity;
 
 	/**
-	 * @var string model name
-	 */
-	public $name;
+     * @var string model name
+     */
+    public $name;
 
 	/**
-	 * @var string model description (short text)
-	 */
-	public $description;
+     * @var string model description (short text)
+     */
+    public $description;
 
 	/**
 	 * @var int	Save the name of generated file as the main doc when generating a doc with this template
@@ -74,14 +69,14 @@ class pdf_azurtitre extends ModelePDFPropales
 	public $update_main_doc_field;
 
 	/**
-	 * @var string document type
-	 */
-	public $type;
+     * @var string document type
+     */
+    public $type;
 
 	/**
-	 * Dolibarr version of the loaded document
-	 * @var string Version, possible values are: 'development', 'experimental', 'dolibarr', 'dolibarr_deprecated' or a version string like 'x.y.z'''|'development'|'dolibarr'|'experimental'
-	 */
+     * Dolibarr version of the loaded document
+     * @var string
+     */
 	public $version = 'dolibarr';
 
 	/**
@@ -141,30 +136,29 @@ class pdf_azurtitre extends ModelePDFPropales
 		$this->db = $db;
 		$this->name = "azurtitre";
 		$this->description = $langs->trans('DocModelAzurDescription');
-		$this->update_main_doc_field = 1; // Save the name of generated file as the main doc when generating a doc with this template
+		$this->update_main_doc_field = 1;		// Save the name of generated file as the main doc when generating a doc with this template
 
 		// Dimension page
 		$this->type = 'pdf';
-		$formatarray = pdf_getFormat();
-		$this->page_largeur = $formatarray['width'];
-		$this->page_hauteur = $formatarray['height'];
-		$this->format = array($this->page_largeur, $this->page_hauteur);
+		$formatArray=pdf_getFormat();
+		$this->page_largeur = $formatArray['width'];
+		$this->page_hauteur = $formatArray['height'];
+		$this->format = array($this->page_largeur,$this->page_hauteur);
 		$this->marge_gauche = getDolGlobalInt('MAIN_PDF_MARGIN_LEFT', 10);
 		$this->marge_droite = getDolGlobalInt('MAIN_PDF_MARGIN_RIGHT', 10);
 		$this->marge_haute = getDolGlobalInt('MAIN_PDF_MARGIN_TOP', 10);
 		$this->marge_basse = getDolGlobalInt('MAIN_PDF_MARGIN_BOTTOM', 10);
 		$this->corner_radius = getDolGlobalInt('MAIN_PDF_FRAME_CORNER_RADIUS', 0);
-		$this->option_logo = 1; // Display logo
-		$this->option_tva = 1; // Manage the vat option FACTURE_TVAOPTION
-		$this->option_modereg = 1; // Display payment mode
-		$this->option_condreg = 1; // Display payment terms
-		$this->option_multilang = 1; // Available in several languages
-		$this->option_escompte = 0; // Displays if there has been a discount
-		$this->option_credit_note = 0; // Support credit notes
-		$this->option_freetext = 1; // Support add of a personalised text
-		$this->option_draft_watermark = 1; // Support add of a watermark on drafts
-		$this->watermark = '';
-
+		$this->option_logo = 1;                    // Affiche logo
+		$this->option_tva = 1;                     // Gere option tva FACTURE_TVAOPTION
+		$this->option_modereg = 1;                 // Affiche mode reglement
+		$this->option_condreg = 1;                 // Affiche conditions reglement
+		$this->option_codeproduitservice = 1;      // Affiche code produit-service
+		$this->option_multilang = 1;               // Dispo en plusieurs langues
+		$this->option_escompte = 0;                // Affiche si il y a eu escompte
+		$this->option_credit_note = 0;             // Support credit notes
+		$this->option_freetext = 1;				   // Support add of a personalised text
+		$this->option_draft_watermark = 1;		   //Support add of a watermark on drafts
 
 		$this->franchise=!$mysoc->tva_assuj;
 
@@ -172,10 +166,8 @@ class pdf_azurtitre extends ModelePDFPropales
 		$this->emetteur=$mysoc;
 		if (empty($this->emetteur->country_code)) $this->emetteur->country_code=substr($langs->defaultlang, -2);    // By default, if was not defined
 
-		$this->option_codeproduitservice = 1;      // Affiche code produit-service
-
 		// Define position of columns
-		$this->posxdesc = $this->marge_gauche + 1;
+		$this->posxdesc=$this->marge_gauche+1;
 		if (getDolGlobalInt('PRODUCT_USE_UNITS')) {
 			$this->posxtva = 101;
 			$this->posxup = 118;
@@ -628,7 +620,7 @@ class pdf_azurtitre extends ModelePDFPropales
 						$curY = $tab_top_newpage;
 					}
 
-					$pdf->SetFont('', '', $default_font_size - 1); // On repositionne la police par defaut
+					$pdf->SetFont('', '', $default_font_size - 1);   // On repositionne la police par defaut
 
 
 					//Titre
@@ -708,16 +700,9 @@ class pdf_azurtitre extends ModelePDFPropales
 					$localtax1_type = $object->lines[$i]->localtax1_type;
 					$localtax2_type = $object->lines[$i]->localtax2_type;
 
-					// TODO remise_percent is an obsolete field for object parent
-					/*if ($object->remise_percent) {
-						$tvaligne -= ($tvaligne * $object->remise_percent) / 100;
-					}
-					if ($object->remise_percent) {
-						$localtax1ligne -= ($localtax1ligne * $object->remise_percent) / 100;
-					}
-					if ($object->remise_percent) {
-						$localtax2ligne -= ($localtax2ligne * $object->remise_percent) / 100;
-					}*/
+					if ($object->remise_percent) $tvaligne-=($tvaligne*$object->remise_percent)/100;
+					if ($object->remise_percent) $localtax1ligne-=($localtax1ligne*$object->remise_percent)/100;
+					if ($object->remise_percent) $localtax2ligne-=($localtax2ligne*$object->remise_percent)/100;
 
 					$vatrate = (string) $object->lines[$i]->tva_tx;
 
@@ -1238,48 +1223,31 @@ class pdf_azurtitre extends ModelePDFPropales
 		// Get Total HT
 		$total_ht = (isModEnabled("multicurrency") && $object->multicurrency_tx != 1 ? $object->multicurrency_total_ht : $object->total_ht);
 
-		// Total discount
-		$total_discount_on_lines = 0;
-		$multicurrency_total_discount_on_lines = 0;
+		// Total remise
+		$total_line_remise = 0;
 		foreach ($object->lines as $i => $line) {
 			$resdiscount = pdfGetLineTotalDiscountAmount($object, $i, $outputlangs, 2);
-			$multicurrency_resdiscount = pdfGetLineTotalDiscountAmount($object, $i, $outputlangs, 2, 1);
-
-			$total_discount_on_lines += (is_numeric($resdiscount) ? $resdiscount : 0);
-			$multicurrency_total_discount_on_lines += (is_numeric($multicurrency_resdiscount) ? $multicurrency_resdiscount : 0);
-			// If line was a negative line, we do not count the discount as a discount
+			$total_line_remise += (is_numeric($resdiscount) ? $resdiscount : 0);
+			// Gestion remise sous forme de ligne négative
 			if ($line->total_ht < 0) {
-				$total_discount_on_lines += -$line->total_ht;
-				$multicurrency_total_discount_on_lines += -$line->multicurrency_total_ht;
+				$total_line_remise += -$line->total_ht;
 			}
 		}
-		if ($total_discount_on_lines > 0) {
-/*			$pdf->SetFillColor(255, 255, 255);
+		if ($total_line_remise > 0) {
+			$pdf->SetFillColor(255, 255, 255);
 			$pdf->SetXY($col1x, $tab2_top + $tab2_hl);
 			$pdf->MultiCell($col2x - $col1x, $tab2_hl, $outputlangs->transnoentities("TotalDiscount").(is_object($outputlangsbis) ? ' / '.$outputlangsbis->transnoentities("TotalDiscount") : ''), 0, 'L', true);
 			$pdf->SetXY($col2x, $tab2_top + $tab2_hl);
 			$pdf->MultiCell($largcol2, $tab2_hl, price($total_line_remise, 0, $outputlangs), 0, 'R', true);
 
-			$index++;*/
+			$index++;
 
 			// Show total NET before discount
 			$pdf->SetFillColor(255, 255, 255);
 			$pdf->SetXY($col1x, $tab2_top);
 			$pdf->MultiCell($col2x - $col1x, $tab2_hl, $outputlangs->transnoentities("TotalHTBeforeDiscount").(is_object($outputlangsbis) ? ' / '.$outputlangsbis->transnoentities("TotalHTBeforeDiscount") : ''), 0, 'L', true);
 			$pdf->SetXY($col2x, $tab2_top);
-
-			$total_before_discount_to_show = ((isModEnabled("multicurrency") && $object->multicurrency_tx != 1) ? ($object->multicurrency_total_ht + $multicurrency_total_discount_on_lines) : ($object->total_ht + $total_discount_on_lines));
-			$pdf->MultiCell($largcol2, $tab2_hl, price($total_before_discount_to_show, 0, $outputlangs), 0, 'R', true);
-
-			$index++;
-
-			$pdf->SetFillColor(255, 255, 255);
-			$pdf->SetXY($col1x, $tab2_top + $tab2_hl);
-			$pdf->MultiCell($col2x - $col1x, $tab2_hl, $outputlangs->transnoentities("TotalDiscount").(is_object($outputlangsbis) ? ' / '.$outputlangsbis->transnoentities("TotalDiscount") : ''), 0, 'L', true);
-			$pdf->SetXY($col2x, $tab2_top + $tab2_hl);
-
-			$total_discount_to_show = ((isModEnabled("multicurrency") && $object->multicurrency_tx != 1) ? $multicurrency_total_discount_on_lines : $total_discount_on_lines);
-			$pdf->MultiCell($largcol2, $tab2_hl, price($total_discount_to_show, 0, $outputlangs), 0, 'R', true);
+			$pdf->MultiCell($largcol2, $tab2_hl, price($total_line_remise + $total_ht, 0, $outputlangs), 0, 'R', true);
 
 			$index++;
 		}
@@ -1435,7 +1403,7 @@ class pdf_azurtitre extends ModelePDFPropales
 
 							$pdf->MultiCell($col2x - $col1x, $tab2_hl, $totalvat, 0, 'L', true);
 
-							$total_localtax = ((isModEnabled("multicurrency") && $object->multicurrency_tx != 1) ? price2num($tvaval * $object->multicurrency_tx, 'MT') : $tvaval);
+							$total_localtax = ((isModEnabled("multicurrency") && isset($object->multicurrency_tx) && $object->multicurrency_tx != 1) ? price2num($tvaval * $object->multicurrency_tx, 'MT') : $tvaval);
 
 							$pdf->SetXY($col2x, $tab2_top + $tab2_hl * $index);
 							$pdf->MultiCell($largcol2, $tab2_hl, price($total_localtax, 0, $outputlangs), 0, 'R', true);
@@ -1669,7 +1637,7 @@ class pdf_azurtitre extends ModelePDFPropales
 	 */
 	protected function _pagehead(&$pdf, $object, $showaddress, $outputlangs, $outputlangsbis = null)
 	{
-		global $conf, $langs;
+		global $conf,$langs;
 
 		$ltrdirection = 'L';
 		if ($outputlangs->trans("DIRECTION") == 'rtl') {
